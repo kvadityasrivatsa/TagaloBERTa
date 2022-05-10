@@ -34,6 +34,13 @@ def preprocess_label_data(datadf,split=False,test_size=None):
         traindf.to_csv('train.csv',index=False)
         testdf.to_csv('test.csv',index=False)
 
+        dataset = load_dataset('csv',data_files={'train':'train.csv',
+                                                 'test':'test.csv'})
+
     else:
         datadf = datadf.reset_index(drop=True)
         datadf.to_csv('data.csv',index=False)
+
+        dataset = load_dataset('csv',data_files={'eval':'data.csv'})
+
+    return dataset
