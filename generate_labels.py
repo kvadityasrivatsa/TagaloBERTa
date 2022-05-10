@@ -1,5 +1,6 @@
 import os
 import argparse
+import numpy as np
 from tqdm import tqdm
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
@@ -45,6 +46,6 @@ model = Trainer(
 print('generating labels.')
 _pred = model.predict(tokenized_dataset['eval'])
 pred = np.argmax(_pred.prediction,axis=1)
-if 'labels' in dataset:
+if 'labels' in tokenized_dataset:
     print(classification_report(pred,tokenized_dataset['eval']['labels']))
 
