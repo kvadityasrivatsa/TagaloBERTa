@@ -42,6 +42,6 @@ def preprocess_label_data(datadf,split=False,test_size=None):
         datadf = datadf.reset_index(drop=True)
         datadf.to_csv('./data/data.csv',index=False)
 
-        dataset = load_dataset('csv',data_files={'eval':'data.csv'})
+        dataset = load_dataset('csv',data_files={'eval':'./data/data.csv'})
 
     return dataset
