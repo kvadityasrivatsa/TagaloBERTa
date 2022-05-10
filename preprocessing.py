@@ -35,4 +35,5 @@ def preprocess_label_data(datadf,split=False,test_size=None):
         testdf.to_csv('test.csv',index=False)
 
     else:
-        
+        datadf = datadf.reset_index(drop=True)
+        datadf.to_csv('data.csv',index=False)
