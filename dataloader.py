@@ -7,7 +7,7 @@ from datasets import load_dataset
 DATA_PATH = './data'
 FINETUNING_DATA_PATH = os.path.join(DATA_PATH,'finetuning_data')
 BASE_MODEL_PATH = os.path.join(DATA_PATH,'base_models')
-FINTUNED_MODEL_PATH = os.path.join(DATA_PATH,'fintuned_models')
+FINETUNED_MODEL_PATH = os.path.join(DATA_PATH,'fintuned_models')
 
 base_model_urls = {'TagaloBERTa_1M':'https://drive.google.com/uc?id=199_fviLladsuamgmUwWSA0ax1sb21EYT',
             'TagaloBERTa_10M':'https://drive.google.com/uc?id=1XJBQSfK3KyLC9lUHqley85MITVikFLjb',
