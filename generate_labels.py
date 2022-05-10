@@ -43,8 +43,8 @@ model = Trainer(
 )
 
 print('generating labels.')
-_pred = model.predict(dataset)
+_pred = model.predict(dataset['eval'])
 pred = np.argmax(_pred.prediction,axis=1)
 if 'labels' in dataset:
-    print(classification_report(pred,dataset['labels']))
+    print(classification_report(pred,dataset['eval']['labels']))
 
