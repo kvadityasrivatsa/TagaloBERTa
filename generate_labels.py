@@ -38,7 +38,7 @@ print('loading model.')
 model_args = TrainingArguments(output_dir='./data/model')
 finetuned_model_path = fetch_finetuned_model(args.tpath)
 model = Trainer(
-    model=AutoModelForSequenceClassification.from_pretrained(tinetuned_model_path,num_labels=2),
+    model=AutoModelForSequenceClassification.from_pretrained(finetuned_model_path,num_labels=2),
     args=model_args,
 )
 
