@@ -37,7 +37,7 @@ def load_custom_data(path,col_map={'text':'comment_text','labels':'annotation'})
         data_path = os.path.join(FINETUNING_DATA_PATH,path)
         gdown.cached_download(custom_data_urls[path],data_path)
         datadf = pd.read_csv(data_path)
-        datadf = datadf.rename(columns={v:k for k,v in col_map.items()})
+        datadf = datadf.rename(columns={v:k for k,v in col_map.items()}).reset_index(drop=True)
     return datadf
 
 def load_huggingface_data(path,split='test',col_map={'text':'text','labels':'label'}):
