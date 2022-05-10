@@ -32,15 +32,15 @@ def preprocess_label_data(datadf,split=False,test_size=None):
         traindf = traindf.reset_index(drop=True)
         testdf = testdf.reset_index(drop=True)
 
-        traindf.to_csv('train.csv',index=False)
-        testdf.to_csv('test.csv',index=False)
+        traindf.to_csv('./data/train.csv',index=False)
+        testdf.to_csv('./data/test.csv',index=False)
 
         dataset = load_dataset('csv',data_files={'train':'train.csv',
                                                  'test':'test.csv'})
 
     else:
         datadf = datadf.reset_index(drop=True)
-        datadf.to_csv('data.csv',index=False)
+        datadf.to_csv('./data/data.csv',index=False)
 
         dataset = load_dataset('csv',data_files={'eval':'data.csv'})
 

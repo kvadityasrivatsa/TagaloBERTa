@@ -35,7 +35,7 @@ def tokenize_function(examples):
 tokenized_dataset = dataset.map(tokenize_function, batched=True)
 
 print('loading model.')
-model_args = TrainingArguments()
+model_args = TrainingArguments(output_dir='./data/model')
 finetuned_model_path = fetch_finetuned_model(args.tpath)
 model = Trainer(
     model=AutoModelForSequenceClassification.from_pretrained(tinetuned_model_path,num_labels=2),
