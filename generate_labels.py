@@ -5,7 +5,7 @@ from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import TrainingArguments, Trainer
 
-from dataloader import fetch_base_encoder, fetch_finetuned_model, load_huggingface_data, load_custom_data
+from dataloader import fetch_base_model, fetch_finetuned_model, load_huggingface_data, load_custom_data
 from preprocessing import preprocess_label_data
 
 argp = argparse.ArgumentParser()
@@ -23,8 +23,10 @@ if not datadf:
 print('preprocessing data.')
 dataset = preprocess_label_data(datadf,split=False)
 
+
 print('tokenizing data.')
-tokenizer = AutoTokenizer.from_pretrained(args.bpath)
+base_model_path = fetch_base_model(args.bpath)
+tokenizer = AutoTokenizer.from_pretrained(base_model_path)
 def tokenize_function(examples):
     return tokenizer(examples["text"], 
                      padding="max_length", 
@@ -34,9 +36,9 @@ tokenized_dataset = dataset.map(tokenize_function, batched=True)
 
 print('loading model.')
 model_args = TrainingArguments()
-model_path = fetch_finetuned_model(args.tpath)
+finetuned_model_path = fetch_finetuned_model(args.tpath)
 model = Trainer(
-    model=AutoModelForSequenceClassification.from_pretrained(model_path,num_labels=2),
+    model=AutoModelForSequenceClassification.from_pretrained(tinetuned_model_path,num_labels=2),
     args=model_args,
 )
 

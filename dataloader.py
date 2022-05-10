@@ -26,7 +26,7 @@ custom_data_urls = {'balanced.csv':None,
                     'balanced_iterative_30.csv':'https://drive.google.com/uc?id=1VONn7GToySkbdiwy8HgG3djUdufqdmjQ',
                     }
 
-def fetch_base_encoder(model):
+def fetch_base_model(model):
     if model not in base_model_urls:
         raise Exception(f"Invalid base model: '{model}' is not available. Select one of the following: {list(base_model_urls.keys())}")
     else:
