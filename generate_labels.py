@@ -2,6 +2,7 @@ import os
 import argparse
 import numpy as np
 from tqdm import tqdm
+from sklearn.metrics import classification_report
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import TrainingArguments, Trainer
