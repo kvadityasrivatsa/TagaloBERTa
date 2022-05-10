@@ -16,7 +16,7 @@ argp.add_argument('--tuned-model-split',type=str,dest='tsplit',default='test')
 args = argp.parse_args()
 
 print('loading data to be labelled.')
-datadf = load_huggingface_data(rpath,args.tsplit)
+datadf = load_huggingface_data(args.rpath,args.tsplit)
 if not datadf:
     datadf = load_custom_data(args.rpath)
 
