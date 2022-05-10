@@ -19,7 +19,7 @@ args = argp.parse_args()
 
 print('loading data to be labelled.')
 datadf = load_huggingface_data(args.rpath,args.tsplit)
-if not datadf:
+if datadf!=None:
     datadf = load_custom_data(args.rpath)
 
 print('preprocessing data.')
