@@ -45,7 +45,7 @@ model = Trainer(
 
 print('generating labels.')
 _pred = model.predict(tokenized_dataset['eval'])
-pred = np.argmax(_pred.prediction,axis=1)
+pred = np.argmax(_pred.predictions,axis=1)
 if 'labels' in tokenized_dataset:
     print(classification_report(pred,tokenized_dataset['eval']['labels']))
 
