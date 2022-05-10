@@ -58,8 +58,8 @@ def load_huggingface_data(path,split='test',col_map={'text':'text','labels':'lab
     try:
         data = load_dataset(path)
     except:
-        return None
+        return False, None
     datadf = pd.DataFrame({'text':data[split][col_map['text']],'labels':data[split][col_map['labels']]})
-    return datadf
+    return True, datadf
 
 
