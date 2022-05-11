@@ -18,7 +18,7 @@ def clean_label_df(df):
 
 def preprocess_label_data(datadf,split=False,test_size=None):
     # datadf = datadf.dropna()
-    datadf[['text']].fillna('',inplace=True)
+    datadf[['text']].fillna('nan',inplace=True)
     datadf = clean_label_df(datadf)
     datadf['text'] = [str(s)[:512].strip() for s in datadf['text']]
     if 'labels' in datadf.columns:
