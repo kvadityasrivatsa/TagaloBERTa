@@ -12,9 +12,12 @@ def clean_label_df(df,max_seq_len=512):
     labels = df['labels'] if 'labels' in df.columns else None
     for i in range(len(texts)):
         text = texts[i]
-        for p in RE_PATTERNS.values():
-            text = re.sub(p,'',text)
-        texts[i] = text
+        try:
+            for p in RE_PATTERNS.values():
+                text = re.sub(p,'',text)
+            texts[i] = text
+        except:
+            texts[i] = ''
     texts = [re.sub(r"[ ]+",' ',s) for s in texts]
     texts = [str(s)[:max_seq_len] for s in texts]
     df['text'] = texts
