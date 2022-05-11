@@ -2,18 +2,28 @@ import re
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 
-def clean_label_df(df):
-    texts, labels = df['text'], df['labels']
-        
-    texts = [re.sub(r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)",'',s) for s in texts]
-    texts = [re.sub(r"[^a-zA-Z0-9']",' ',s) for s in texts]
+RE_PATTERNS = {'urls':r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)",
+               'not_alpha_num':r"[^a-zA-Z0-9']",
+               }
+RE_PATTERNS = {k:re.compile(v) for k,v in RE_PATTERNS.items()}
+
+def clean_label_df(df,max_seq_len=512):
+    texts = df['text']
+    labels = df['labels'] if 'labels' in df.columns else None
+    for i in range(len(texts)):
+        text = texts[i]
+        for p in RE_PATTERNS.values():
+            text = re.sub(p,'',text)
+        texts[i] = text
     texts = [re.sub(r"[ ]+",' ',s) for s in texts]
-    texts = [str(s)[:512] for s in texts]
+    texts = [str(s)[:max_seq_len] for s in texts]
+    df['text'] = texts
 
-    labels = [1.0 if int(l)==1 else 0.0 for l in labels]
-    labels = [1 if s else 0 for s in labels]
+    if 'labels' in df.columns:
+        labels = [1.0 if int(l)==1 else 0.0 for l in labels]
+        labels = [1 if s else 0 for s in labels]
+        df['labels'] = labels
 
-    df['text'], df['labels'] = texts, labels
     return df
 
 def preprocess_label_data(datadf,split=False,test_size=None):
@@ -26,6 +36,7 @@ def preprocess_label_data(datadf,split=False,test_size=None):
         datadf['labels'] = [1 if int(l)==1 else 0 for l in datadf['labels']]
 
     if split:
+        datadf = datadf.dropna()
         datadf = datadf[[len(l)>5 for l in datadf['text']]]
         print(f'before pruning: {len(datadf)}')
         datadf = datadf.drop_duplicates(subset=['text'],keep='first')
