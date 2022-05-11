@@ -17,7 +17,7 @@ def clean_label_df(df,max_seq_len=512):
                 text = re.sub(p,'',text)
             texts[i] = text
         except:
-            texts[i] = ''
+            texts[i] = 'nan'
     texts = [re.sub(r"[ ]+",' ',s) for s in texts]
     texts = [str(s)[:max_seq_len] for s in texts]
     df['text'] = texts
