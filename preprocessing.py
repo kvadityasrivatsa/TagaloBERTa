@@ -22,7 +22,7 @@ def clean_label_df(df,max_seq_len=512):
 
 def preprocess_label_data(datadf,split=False,test_size=None):
     datadf = datadf.dropna()
-    datadf = clean(datadf)
+    datadf = clean_label_df(datadf)
     datadf['comment_text'] = [str(s)[:512].strip() for s in datadf['text']]
     datadf['comment_label'] = [1 if int(l)==1 else 0 for l in datadf['labels']]
     datadf = datadf[[len(l)>5 for l in datadf['text']]]
@@ -30,6 +30,10 @@ def preprocess_label_data(datadf,split=False,test_size=None):
     print(f'before pruning: {len(datadf)}')
     datadf = datadf.drop_duplicates(subset=['text'],keep='first')
     print(f'after pruning: {len(datadf)}')
+
+    datadf = datadf.rename(cols={'comment_id':'comment_id',
+                                 'comment_text':'comment_text',
+                                 'comment_label':'labels'})
 
     if split:
         traindf, testdf = train_test_split(datadf,test_size=0.25,random_state=0)
