@@ -7,7 +7,8 @@ from sklearn.metrics import classification_report
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import TrainingArguments, Trainer
 
-from dataloader import fetch_base_model, fetch_finetuned_model, load_huggingface_data, load_custom_data
+from dataloader import fetch_base_model, fetch_finetuned_model
+from dataloader import load_huggingface_data, load_finetuning_data
 from preprocessing import preprocess_label_data
 
 argp = argparse.ArgumentParser()
