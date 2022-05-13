@@ -13,7 +13,8 @@ from preprocessing import preprocess_label_data
 
 argp = argparse.ArgumentParser()
 argp.add_argument('--raw-data',type=str,dest='rpath',required=True,default=None)
-argp.add_argument('--tuned-model',type=str,dest='tpath',default='TagaloBERTa_RoBERTa_Bi10_30M.model')
+argp.add_argument('--output-path',type=str,dest='xpath',required=True,default='output.csv')
+argp.add_argument('--tuned-model',type=str,dest='tpath',default='TagaloBERTa_hgfc_plus_Bi10_30M.model')
 argp.add_argument('--base-model',type=str,dest='bpath',default='TagaloBERTa_30M')
 argp.add_argument('--tuned-model-split',type=str,dest='tsplit',default='test')
 args = argp.parse_args()
@@ -51,4 +52,4 @@ pred = np.argmax(_pred.predictions,axis=1)
 if 'labels' in datadf:
     print(classification_report(pred,tokenized_dataset['eval']['labels']))
 datadf['comment_label'] = list(pred)
-datadf[['comment_id','comment_label']].to_csv(f"{'.'.join(args.rpath.split('.')[:-1])}.output.csv")
+datadf[['comment_id','comment_label']].to_csv(args.xpath)
