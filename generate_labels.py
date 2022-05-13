@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import TrainingArguments, Trainer
 
 from dataloader import fetch_base_model, fetch_finetuned_model
-from dataloader import load_huggingface_data, load_finetuning_data
+from dataloader import load_huggingface_data, load_external_data
 from preprocessing import preprocess_label_data
 
 argp = argparse.ArgumentParser()
@@ -21,11 +21,11 @@ args = argp.parse_args()
 print('loading data to be labelled.')
 res, datadf = load_huggingface_data(args.rpath,args.tsplit)
 if not res:
-    datadf = load_finetuning_data(args.rpath)
+    # datadf = load_finetuning_data(args.rpath)
+    datadf = load_external_data(args.rpath)
 
 print('preprocessing data.')
 dataset = preprocess_label_data(datadf,split=False)
-
 
 print('tokenizing data.')
 base_model_path = fetch_base_model(args.bpath)

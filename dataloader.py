@@ -46,15 +46,25 @@ def fetch_finetuned_model(model):
         shutil.unpack_archive(finetuned_path,FINETUNED_MODEL_PATH,'zip')
         return os.path.join(FINETUNED_MODEL_PATH,model)
 
-def load_finetuning_data(path,col_map={'text':'comment_text','labels':'comment_label'}):
-    if path not in finetuning_data_urls:
-        raise Exception(f"Invalid dataset: '{path}' is not available. Select one of the following: {list(finetuning_data_urls.keys())}")
+# def load_finetuning_data(path,col_map={'text':'comment_text','labels':'comment_label'}):
+#     if path not in finetuning_data_urls:
+#         raise Exception(f"Invalid dataset: '{path}' is not available. Select one of the following: {list(finetuning_data_urls.keys())}")
+#     else:
+#         data_path = os.path.join(FINETUNING_DATA_PATH,path)
+#         gdown.cached_download(finetuning_data_urls[path],data_path)
+#         datadf = pd.read_csv(data_path)
+#         # datadf = datadf.rename(columns={v:k for k,v in col_map.items()}).reset_index(drop=True)
+#     return datadf
+
+def load_external_data(path):
+    if not os.path.exists(path):
+        raise FileNotFoundException('No such file found.')
     else:
-        data_path = os.path.join(FINETUNING_DATA_PATH,path)
-        gdown.cached_download(finetuning_data_urls[path],data_path)
-        datadf = pd.read_csv(data_path)
-        # datadf = datadf.rename(columns={v:k for k,v in col_map.items()}).reset_index(drop=True)
-    return datadf
+        datadf = pd.read_csv(path)
+        if all([c in datadf.columns for c in ['comment_id','comment_text']]):
+            return datadf
+        else:
+            raise Exception('File must atleast contain the following columns: ["comment_id","comment_text"]')
 
 def load_huggingface_data(path,split='test',col_map={'text':'comment_text','labels':'comment_label'}):
     try:
