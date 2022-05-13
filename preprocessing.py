@@ -37,9 +37,9 @@ def preprocess_label_data(datadf,split=False,test_size=None):
     datadf = datadf.drop_duplicates(subset=['comment_text'],keep='first')
     print(f'after pruning: {len(datadf)}')
 
-    datadf = datadf.rename(cols={'comment_id':'comment_id',
-                                 'comment_text':'comment_text',
-                                 'comment_label':'labels'})
+    datadf = datadf.rename(columns={'comment_id':'comment_id',
+                                    'comment_text':'comment_text',
+                                    'comment_label':'labels'})
     
     if split:
         traindf, testdf = train_test_split(datadf,test_size=0.25,random_state=0)
