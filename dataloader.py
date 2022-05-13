@@ -9,6 +9,9 @@ FINETUNING_DATA_PATH = os.path.join(DATA_PATH,'finetuning_data')
 BASE_MODEL_PATH = os.path.join(DATA_PATH,'base_models')
 FINETUNED_MODEL_PATH = os.path.join(DATA_PATH,'fintuned_models')
 
+os.makedirs(DATA_PATH,exist_ok=True)
+# os.makedirs(FINETUNING_DATA_PATH,exist_ok=True)
+
 base_model_urls = {'TagaloBERTa_1M':'https://drive.google.com/uc?id=199_fviLladsuamgmUwWSA0ax1sb21EYT',
             'TagaloBERTa_10M':'https://drive.google.com/uc?id=1XJBQSfK3KyLC9lUHqley85MITVikFLjb',
             'TagaloBERTa_30M':'https://drive.google.com/uc?id=1LI-nudLwAA1pTUoNhS_dVwsDvjPGK_Dg',
@@ -32,6 +35,7 @@ def fetch_base_model(model):
     if model not in base_model_urls:
         raise Exception(f"Invalid base model: '{model}' is not available. Select one of the following: {list(base_model_urls.keys())}")
     else:
+        os.makedirs(BASE_MODEL_PATH,exist_ok=True)
         base_path = os.path.join(BASE_MODEL_PATH,model+'.zip')
         gdown.cached_download(base_model_urls[model],base_path)
         shutil.unpack_archive(base_path,BASE_MODEL_PATH,'zip')
@@ -41,6 +45,7 @@ def fetch_finetuned_model(model):
     if model not in finetuned_model_urls:
         raise Exception(f"Invalid finetuned model: '{model}' is not available. Select one of the following: {list(finetuned_model_urls.keys())}")
     else:
+        os.makedirs(FINETUNED_MODEL_PATH,exist_ok=True)
         finetuned_path = os.path.join(FINETUNED_MODEL_PATH,model+'.zip')
         gdown.cached_download(finetuned_model_urls[model],finetuned_path)
         shutil.unpack_archive(finetuned_path,FINETUNED_MODEL_PATH,'zip')
