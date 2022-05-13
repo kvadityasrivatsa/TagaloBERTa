@@ -31,7 +31,7 @@ print('tokenizing data.')
 base_model_path = fetch_base_model(args.bpath)
 tokenizer = AutoTokenizer.from_pretrained(base_model_path)
 def tokenize_function(examples):
-    return tokenizer(examples["text"], 
+    return tokenizer(examples["comment_text"], 
                      padding="max_length", 
                      truncation=True,
                      max_length=512)
