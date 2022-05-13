@@ -48,7 +48,7 @@ model = Trainer(
 print('generating labels.')
 _pred = model.predict(tokenized_dataset['eval'])
 pred = np.argmax(_pred.predictions,axis=1)
-if 'comment_label' in datadf:
+if 'labels' in datadf:
     print(classification_report(pred,tokenized_dataset['eval']['labels']))
 datadf['comment_label'] = list(pred)
 datadf[['comment_id','comment_label']].to_csv(f"{'.'.join(args.rpath.split('.')[:-1])}.output.csv")
