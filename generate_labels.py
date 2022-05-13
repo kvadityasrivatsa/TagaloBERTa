@@ -21,7 +21,7 @@ args = argp.parse_args()
 print('loading data to be labelled.')
 res, datadf = load_huggingface_data(args.rpath,args.tsplit)
 if not res:
-    datadf = load_custom_data(args.rpath)
+    datadf = load_finetuning_data(args.rpath)
 
 print('preprocessing data.')
 dataset = preprocess_label_data(datadf,split=False)
