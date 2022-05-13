@@ -52,4 +52,4 @@ if 'labels' in tokenized_dataset['eval']:
     print(classification_report(pred,tokenized_dataset['eval']['labels']))
 else:
     datadf['comment_label'] = list(pred)
-    datadf[['comment_id','comment_label']].to_csv(f"{'.'.join(rpath.split('.')[:-1])}.output.csv")
+    datadf[['comment_id','comment_label']].to_csv(f"{'.'.join(args.rpath.split('.')[:-1])}.output.csv")
