@@ -9,7 +9,7 @@ RE_PATTERNS = {k:re.compile(v) for k,v in RE_PATTERNS.items()}
 
 def clean_label_df(df,max_seq_len=512):
 
-    texts, labels = df['comment_text']
+    texts = df['comment_text']
     texts = [re.sub(r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)",'',s) for s in texts]
     texts = [re.sub(r"[^a-zA-Z0-9']",' ',s) for s in texts]
     texts = [re.sub(r"[ ]+",' ',s) for s in texts]
