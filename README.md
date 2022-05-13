@@ -4,6 +4,10 @@ Tagalog-English code-mixed hatespeech detection
 ## Getting Started
 
 ### Installation
+
+Dependencies:
+- Python >= 3.8
+
 ```
 $ git clone https://github.com/kvadityasrivatsa/TagaloBERTa.git
 $ cd TagaloBERTa/
