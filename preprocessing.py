@@ -8,7 +8,7 @@ RE_PATTERNS = {'urls':r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)
 RE_PATTERNS = {k:re.compile(v) for k,v in RE_PATTERNS.items()}
 
 def clean_label_df(df,max_seq_len=512):
-    texts, labels = df['comment_text'], df['comment_labels']        
+    texts, labels = df['comment_text'], df['comment_label']        
     texts = [re.sub(r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)",'',s) for s in texts]
     texts = [re.sub(r"[^a-zA-Z0-9']",' ',s) for s in texts]
     texts = [re.sub(r"[ ]+",' ',s) for s in texts]
@@ -17,7 +17,7 @@ def clean_label_df(df,max_seq_len=512):
     labels = [1.0 if int(l)==1 else 0.0 for l in labels]
     labels = [1 if s else 0 for s in labels]
 
-    df['comment_text'], df['comment_labels'] = texts, labels
+    df['comment_text'], df['comment_label'] = texts, labels
     return df
 
 def preprocess_label_data(datadf,split=False,test_size=None):
