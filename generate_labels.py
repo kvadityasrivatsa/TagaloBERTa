@@ -25,7 +25,7 @@ if not res:
     datadf = load_external_data(args.rpath)
 
 print('preprocessing data.')
-dataset = preprocess_label_data(datadf,split=False)
+dataset, datadf = preprocess_label_data(datadf,split=False)
 
 print('tokenizing data.')
 base_model_path = fetch_base_model(args.bpath)
