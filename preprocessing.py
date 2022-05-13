@@ -33,15 +33,16 @@ def preprocess_label_data(datadf,split=False,test_size=None):
     if 'comment_label' in datadf:
         datadf['comment_label'] = [1 if int(l)==1 else 0 for l in datadf['comment_label']]
 
-    print(f'before pruning: {len(datadf)}')
-    datadf = datadf.drop_duplicates(subset=['comment_text'],keep='first')
-    print(f'after pruning: {len(datadf)}')
-
     datadf = datadf.rename(columns={'comment_id':'comment_id',
                                     'comment_text':'comment_text',
                                     'comment_label':'labels'})
     
     if split:
+
+        print(f'before pruning: {len(datadf)}')
+        datadf = datadf.drop_duplicates(subset=['comment_text'],keep='first')
+        print(f'after pruning: {len(datadf)}')
+
         traindf, testdf = train_test_split(datadf,test_size=0.25,random_state=0)
         traindf = traindf.reset_index(drop=True)
         testdf = testdf.reset_index(drop=True)
