@@ -10,6 +10,10 @@ BASE_MODEL_PATH = os.path.join(DATA_PATH,'base_models')
 FINETUNED_MODEL_PATH = os.path.join(DATA_PATH,'fintuned_models')
 
 os.makedirs(DATA_PATH,exist_ok=True)
+
+# remove dataset cache
+if os.path.exists('./data/cache'):
+    shutil.rmtree('./data/cache')
 # os.makedirs(FINETUNING_DATA_PATH,exist_ok=True)
 
 base_model_urls = {'TagaloBERTa_1M':'https://drive.google.com/uc?id=199_fviLladsuamgmUwWSA0ax1sb21EYT',
