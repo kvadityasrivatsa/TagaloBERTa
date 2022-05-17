@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import TrainingArguments, Trainer
 
 from dataloader import fetch_base_model, fetch_finetuned_model
-from dataloader import load_huggingface_data, load_external_data
+from dataloader import load_huggingface_data, load_external_data, clear_cache
 from preprocessing import preprocess_label_data
 
 argp = argparse.ArgumentParser()
@@ -53,3 +53,5 @@ if 'labels' in datadf:
     print(classification_report(pred,tokenized_dataset['eval']['labels']))
 datadf['comment_label'] = list(pred)
 datadf[['comment_id','comment_label']].to_csv(args.xpath)
+
+clear_cache()

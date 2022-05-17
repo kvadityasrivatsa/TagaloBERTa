@@ -1,6 +1,12 @@
 import re
+from time import time
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
+
+DATA_PATH = './data'
+CACHE_BASE_PATH = os.path.join(DATA_PATH,'cache')
+CACHE_PATH = os.path.join(CACHE_BASE_PATH,''.join(str(time()).split('.')))
+print("CACHE_PATH: ",CACHE_PATH)
 
 RE_PATTERNS = {'urls':r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)",
                'not_alpha_num':r"[^a-zA-Z0-9']",
@@ -50,12 +56,11 @@ def preprocess_label_data(datadf,split=False,test_size=None):
         testdf.to_csv('./data/test.csv',index=False)
         dataset = load_dataset('csv', data_files={'train':'./data/train.csv',
                                                   'test':'./data/test.csv'},
-                                    cache_dir='./data/cache')
+                                    cache_dir=CACHE_PATH)
 
     else:
         datadf = datadf.reset_index(drop=True)
         datadf.to_csv('./data/data.csv',index=False)
         dataset = load_dataset('csv',data_files={'eval':'./data/data.csv'},
-                                cache_dir='./data/cache')
-
+                                cache_dir=CACHE_PATH)
     return dataset, datadf
