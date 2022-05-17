@@ -8,8 +8,8 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import TrainingArguments, Trainer
 
 from dataloader import fetch_base_model, fetch_finetuned_model
-from dataloader import load_huggingface_data, load_external_data, clear_cache
-from preprocessing import preprocess_label_data
+from dataloader import load_huggingface_data, load_external_data
+from preprocessing import preprocess_label_data, clear_cache
 
 argp = argparse.ArgumentParser()
 argp.add_argument('--raw-data',type=str,dest='rpath',required=True,default=None)

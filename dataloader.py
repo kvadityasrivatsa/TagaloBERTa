@@ -79,7 +79,3 @@ def load_huggingface_data(path,split='test',col_map={'text':'comment_text','labe
         return False, None
     datadf = pd.DataFrame({'comment_text':data[split][col_map['text']],'label':data[split][col_map['labels']]})
     return True, datadf
-
-def clear_cache():
-    shutil.rmtree(CACHE_PATH)
-    print(f"CACHE_PATH: {CACHE_PATH} cleared.")

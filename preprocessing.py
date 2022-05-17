@@ -66,3 +66,7 @@ def preprocess_label_data(datadf,split=False,test_size=None):
         dataset = load_dataset('csv',data_files={'eval':'./data/data.csv'},
                                 cache_dir=CACHE_PATH)
     return dataset, datadf
+
+def clear_cache():
+    shutil.rmtree(CACHE_PATH)
+    print(f"CACHE_PATH: {CACHE_PATH} cleared.")
