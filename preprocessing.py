@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 DATA_PATH = './data'
 CACHE_BASE_PATH = os.path.join(DATA_PATH,'cache')
 CACHE_PATH = os.path.join(CACHE_BASE_PATH,''.join(str(time()).split('.')))
+os.makedirs(CACHE_PATH,exist_ok=True)
 print("CACHE_PATH: ",CACHE_PATH)
 
 RE_PATTERNS = {'urls':r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)",

@@ -11,7 +11,7 @@ BASE_MODEL_PATH = os.path.join(DATA_PATH,'base_models')
 FINETUNED_MODEL_PATH = os.path.join(DATA_PATH,'fintuned_models')
 
 os.makedirs(DATA_PATH,exist_ok=True)
-os.makedirs(CACHE_PATH,exist_ok=True)
+os.makedirs(CACHE_BASE_PATH,exist_ok=True)
 
 base_model_urls = {'TagaloBERTa_1M':'https://drive.google.com/uc?id=199_fviLladsuamgmUwWSA0ax1sb21EYT',
             'TagaloBERTa_10M':'https://drive.google.com/uc?id=1XJBQSfK3KyLC9lUHqley85MITVikFLjb',
