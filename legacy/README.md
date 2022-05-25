@@ -40,8 +40,10 @@ The [cleaning script](https://github.com/kvadityasrivatsa/TagaloBERTa/blob/c7254
 
 The above mentioned 110,000 annotations range over 11k unique comment texts, but the the number of annotations per comment vary widely  (as shown in the figure below)
 
-<img src="https://i.imgur.com/VQUUnYP.png" alt="img" style="zoom:40%;" />
-
+<p align="center">
+<img src="https://i.imgur.com/VQUUnYP.png" width="700" />
+</p>
+	
 This creates the need for a policy for regarding sequences as (in)valid based on the number of annotations they have as well as which kind. For the data files used in this project, the following policy was employed:
 
 ```python
