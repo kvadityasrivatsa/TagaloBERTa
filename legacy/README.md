@@ -16,7 +16,7 @@ This README documents the different methods for labelled-data-augmentation and h
       1. [Finetuning Transformer models](#Finetuning-Transformer-models)
       2. [Re-Training Transformer models](#Re-Training-Transformer-models)
       3. [Training Static-Embeddings (GloVe) from scratch](#Training-Static-Embeddings-(GloVe)-from-scratch)
-      4. [TagaloBERTA: Training RoBERTa from scratch](#TagaloBERTA:-Training-RoBERTa-from-scratch)
+      4. [TagaloBERTa: Training RoBERTa from scratch](#TagaloBERTA:-Training-RoBERTa-from-scratch)
 
 
 
