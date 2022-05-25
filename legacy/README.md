@@ -17,6 +17,7 @@ This README documents the different methods for labelled-data-augmentation and h
       2. [Re-Training Transformer models](#Re-Training-Transformer-models)
       3. [Training Static-Embeddings (GloVe) from scratch](#Training-Static-Embeddings-(GloVe)-from-scratch)
       4. [TagaloBERTa: Training RoBERTa from scratch](#TagaloBERTa:-Training-RoBERTa-from-scratch)
+3. Conclusion
 
 
 
@@ -43,7 +44,7 @@ The above mentioned 110,000 annotations range over 11k unique comment texts, but
 <p align="center">
 <img src="https://i.imgur.com/VQUUnYP.png" width="700" />
 </p>
-	
+
 This creates the need for a policy for regarding sequences as (in)valid based on the number of annotations they have as well as which kind. For the data files used in this project, the following policy was employed:
 
 ```python
@@ -117,48 +118,48 @@ The overall accuracy of TF-IDF + (Random Forest / XGBoost) ranged between 64% to
 **Random Forest**
 
 ```
-	# Without class balancing
-                    precision    recall  f1-score   support
+# Without class balancing
+                precision    recall  f1-score   support
 
-                 0       0.71      0.97      0.82      2121
-                 1       0.71      0.16      0.26      1016
+             0       0.71      0.97      0.82      2121
+             1       0.71      0.16      0.26      1016
 
-          accuracy                           0.71      3137
-         macro avg       0.71      0.56      0.54      3137
-      weighted avg       0.71      0.71      0.64      3137
-      
-	# With class balancing
-                    precision    recall  f1-score   support
+      accuracy                           0.71      3137
+     macro avg       0.71      0.56      0.54      3137
+  weighted avg       0.71      0.71      0.64      3137
 
-                 0       0.72      0.89      0.80      2121
-                 1       0.55      0.28      0.37      1016
+# With class balancing
+                precision    recall  f1-score   support
 
-          accuracy                           0.69      3137
-         macro avg       0.63      0.58      0.58      3137
-      weighted avg       0.66      0.69      0.66      3137
+             0       0.72      0.89      0.80      2121
+             1       0.55      0.28      0.37      1016
+
+      accuracy                           0.69      3137
+     macro avg       0.63      0.58      0.58      3137
+  weighted avg       0.66      0.69      0.66      3137
 ```
 **XGBoost**
 
 ```
-	# Without class balancing
-                    precision    recall  f1-score   support
+# Without class balancing
+                precision    recall  f1-score   support
 
-                 0       0.71      0.98      0.82      2121
-                 1       0.80      0.14      0.24      1016
+             0       0.71      0.98      0.82      2121
+             1       0.80      0.14      0.24      1016
 
-          accuracy                           0.71      3137
-         macro avg       0.75      0.56      0.53      3137
-      weighted avg       0.73      0.71      0.63      3137
+      accuracy                           0.71      3137
+     macro avg       0.75      0.56      0.53      3137
+  weighted avg       0.73      0.71      0.63      3137
 
-	# With class balancing
-                    precision    recall  f1-score   support
+# With class balancing
+                precision    recall  f1-score   support
 
-                 0       0.75      0.70      0.72      2121
-                 1       0.45      0.50      0.47      1016
+             0       0.75      0.70      0.72      2121
+             1       0.45      0.50      0.47      1016
 
-          accuracy                           0.64      3137
-         macro avg       0.60      0.60      0.60      3137
-      weighted avg       0.65      0.64      0.64      3137
+      accuracy                           0.64      3137
+     macro avg       0.60      0.60      0.60      3137
+  weighted avg       0.65      0.64      0.64      3137
 ```
 
 **Traditional Methods Notebook:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1SlYKqTedG0R4XM1VwEmIxcmQVsrR53pv?usp=sharing)
@@ -194,6 +195,8 @@ One of the issues identified with the data was the difference in the subword tok
 
 As training a Transformer based model from scratch is data intensive, an intermediate apporach was taken up to train a static-embeddings language model. GloVe embeddings were used for this. 
 
+**Results:** The embeddings from the GloVe model coupled with the linear layer finetuning as well as sparse-forest classification gave similar scores as the traditional approaches step. The poor performance can largely be attributed to the data being used at the time (same as traditional methods: highly unbalanced samples or too few balanced examples (~2k)).
+
 [Return to top](#Contents)
 
 #### TagaloBERTa: Training RoBERTa from scratch
@@ -209,3 +212,33 @@ The training config used was the following:
 **Training LM code:** [TagaloBERTa/train_lm.py](https://github.com/kvadityasrivatsa/TagaloBERTa/blob/main/train_lm.py)
 
 [Return to top](#Contents)
+
+### Conclusion
+
+The issues faced in this project can be linked to two major root causes:
+
+1. Too few quality annotation labels:
+
+   This was eventually addressed using [iterative label extrapolation](#Iterative-Label-Extrapolation) as well as adding [external annotated data](https://huggingface.co/datasets/hate_speech_filipino) to improve the volumne as well as quality of the training data.
+
+2. Lack of pre-trained encoders specific to the code-mixed Tagalog-English data present in labelled exmaples:
+
+   Following an incremental process, from finetuning and re-training, to pre-training a RoBERTa model from scratch, TagaloBERTa was trained on the comment texts from the labelled as well as the raw (~30M) samples mathcing the distribution of content as well as extent of code-mixing as in the original training data.
+
+The final pipelines utilizes the augmented labelled data to fine-tune a (linear) classification head on a pre-trained RoBERTa model for detecting hate speech. The scores obtained on a held-out test set for the latest version of the pipeline are given below:
+
+```
+              precision    recall  f1-score   support
+
+           0       0.79      0.85      0.81      2428
+           1       0.86      0.80      0.83      2860
+
+    accuracy                           0.82      5288
+   macro avg       0.82      0.82      0.82      5288
+weighted avg       0.83      0.82      0.82      5288
+```
+
+The code and instructions for generating prediction labels on comment text can be found [here](https://github.com/kvadityasrivatsa/TagaloBERTa/blob/main/generate_labels.py).
+
+[Return to top](#Contents)
+
