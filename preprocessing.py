@@ -55,8 +55,8 @@ def preprocess_label_data(datadf,split=False,test_size=None):
         print(f'after pruning: {len(datadf)}')
 
         traindf, testdf = train_test_split(datadf,test_size=0.25,random_state=0)
-        # traindf = traindf.reset_index(drop=True)
-        # testdf = testdf.reset_index(drop=True)
+        traindf = traindf.reset_index(drop=True)
+        testdf = testdf.reset_index(drop=True)
         traindf.to_csv('./data/train.csv',index=False)
         testdf.to_csv('./data/test.csv',index=False)
         dataset = load_dataset('csv', data_files={'train':'./data/train.csv',
@@ -64,11 +64,20 @@ def preprocess_label_data(datadf,split=False,test_size=None):
                                     cache_dir=CACHE_PATH)
 
     else:
-        # datadf = datadf.reset_index(drop=True)
+        datadf = datadf.reset_index(drop=True)
         datadf.to_csv('./data/data.csv',index=False)
         dataset = load_dataset('csv',data_files={'eval':'./data/data.csv'},
                                 cache_dir=CACHE_PATH)
     return dataset, datadf
+
+def linear_join(srcdf,predf):
+    '''
+        srcdf: ["comment_id","comment_text"]
+        predf: ["comment_id","comment_label"]
+    '''
+    predf_lookup = {r['comment_id']:int(r['comment_label']) for _,r in predf.iterrows()}
+    srcdf['comment_label'] = [predf_lookup[r['comment_id']] if r['comment_id'] in predf_lookup else 0 for _,r in srcdf.iterrows()]
+    return srcdf
 
 def clear_cache():
     shutil.rmtree(CACHE_PATH)

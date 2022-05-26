@@ -1,6 +1,8 @@
 import warnings
 warnings.filterwarnings("ignore")
 
+import pdb
+
 import os
 import argparse
 import numpy as np
@@ -12,7 +14,7 @@ from transformers import TrainingArguments, Trainer
 
 from dataloader import fetch_base_model, fetch_finetuned_model
 from dataloader import load_huggingface_data, load_external_data
-from preprocessing import preprocess_label_data, clear_cache
+from preprocessing import preprocess_label_data, linear_join, clear_cache
 
 argp = argparse.ArgumentParser()
 argp.add_argument('--raw-data',type=str,dest='rpath',required=True,default=None)
@@ -30,7 +32,7 @@ if not res:
 rawdf = rawdf.dropna(subset=['comment_id'])
 rawdf = rawdf[['comment_id','comment_text','comment_label'] if 'comment_label' in rawdf.columns else ['comment_id','comment_text']]
 rawdf['comment_id'] = rawdf['comment_id'].astype(int)
-rawdf = rawdf.set_index('comment_id')
+# rawdf = rawdf.set_index('comment_id')
 
 print('preprocessing data.')
 dataset, datadf = preprocess_label_data(rawdf.copy(),split=False)
@@ -60,8 +62,12 @@ if 'labels' in datadf:
     print(classification_report(pred,tokenized_dataset['eval']['labels']))
 datadf['comment_label'] = list(pred)
 
-rawdf = rawdf.join(datadf,on='comment_id',lsuffix='',rsuffix='_R')
-rawdf['comment_label'] = rawdf['comment_label'].fillna(1.0).astype(int)
+pdb.set_trace()
+
+# rawdf = rawdf.join(datadf,on='comment_id',lsuffix='',rsuffix='_R')
+# rawdf['comment_label'] = rawdf['comment_label'].fillna(1.0).astype(int)
+rawdf = linear_join(rawdf,datadf)
+
 rawdf[['comment_label']].to_csv(args.xpath)
 
 clear_cache()
