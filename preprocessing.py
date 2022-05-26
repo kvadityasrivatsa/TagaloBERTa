@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 from time import time
+from tqdm import tqdm
 from datasets import load_dataset
 from sklearn.model_selection import train_test_split
 
@@ -75,8 +76,8 @@ def linear_join(srcdf,predf):
         srcdf: ["comment_id","comment_text"]
         predf: ["comment_id","comment_label"]
     '''
-    predf_lookup = {r['comment_id']:int(r['comment_label']) for _,r in predf.iterrows()}
-    srcdf['comment_label'] = [predf_lookup[r['comment_id']] if r['comment_id'] in predf_lookup else 0 for _,r in srcdf.iterrows()]
+    predf_lookup = {r['comment_id']:int(r['comment_label']) for _,r in tqdm(predf.iterrows(),total=len(predf))}
+    srcdf['comment_label'] = [predf_lookup[r['comment_id']] if r['comment_id'] in predf_lookup else 0 for _,r in tqdm(srcdf.iterrows(),total=len(srcdf))]
     return srcdf
 
 def clear_cache():
