@@ -69,5 +69,8 @@ pdb.set_trace()
 rawdf = linear_join(rawdf,datadf)
 
 rawdf[['comment_label']].to_csv(args.xpath)
+zcount = len(rawdf[rawdf['comment_label']==0])
+zprop = zcount / len(rawdf)
+print(f"class distribution: 0:({zprop}|{zcount}) 1:({1-zprop}|{len(rawdf)-zcount})")
 
 clear_cache()
