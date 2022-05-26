@@ -55,8 +55,8 @@ def preprocess_label_data(datadf,split=False,test_size=None):
         print(f'after pruning: {len(datadf)}')
 
         traindf, testdf = train_test_split(datadf,test_size=0.25,random_state=0)
-        traindf = traindf.reset_index(drop=True)
-        testdf = testdf.reset_index(drop=True)
+        # traindf = traindf.reset_index(drop=True)
+        # testdf = testdf.reset_index(drop=True)
         traindf.to_csv('./data/train.csv',index=False)
         testdf.to_csv('./data/test.csv',index=False)
         dataset = load_dataset('csv', data_files={'train':'./data/train.csv',
@@ -64,7 +64,7 @@ def preprocess_label_data(datadf,split=False,test_size=None):
                                     cache_dir=CACHE_PATH)
 
     else:
-        datadf = datadf.reset_index(drop=True)
+        # datadf = datadf.reset_index(drop=True)
         datadf.to_csv('./data/data.csv',index=False)
         dataset = load_dataset('csv',data_files={'eval':'./data/data.csv'},
                                 cache_dir=CACHE_PATH)
