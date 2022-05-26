@@ -63,7 +63,8 @@ print(datadf)
 print('\n\n\n\n')
 print(rawdf)
 
-rawdf.join(datadf,on='comment_id')
+rawdf = rawdf.join(datadf,on='comment_id',lsuffix='',rsuffix='_R')
+rawdf['comment_label'] = rawdf['comment_label'].fillna(1.0)
 rawdf[['comment_label']].to_csv(args.xpath)
 
 clear_cache()
