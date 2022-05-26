@@ -15,6 +15,8 @@ RE_PATTERNS = {'urls':r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)
                'not_alpha_num':r"[^a-zA-Z0-9']",
                }
 RE_PATTERNS = {k:re.compile(v) for k,v in RE_PATTERNS.items()}
+MAX_SEQ_LEN = 512
+MIN_ANNOTATION_COUNT = 5
 
 def clean_label_df(df,max_seq_len=512):
 
@@ -22,7 +24,7 @@ def clean_label_df(df,max_seq_len=512):
     texts = [re.sub(r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)",'',s) for s in texts]
     texts = [re.sub(r"[^a-zA-Z0-9']",' ',s) for s in texts]
     texts = [re.sub(r"[ ]+",' ',s) for s in texts]
-    texts = [str(s)[:512] for s in texts]
+    texts = [str(s)[:MAX_SEQ_LEN] for s in texts]
     df['comment_text'] = texts
 
     if 'comment_label' in df:
@@ -37,7 +39,7 @@ def preprocess_label_data(datadf,split=False,test_size=None):
     datadf = datadf.dropna()
     datadf = clean_label_df(datadf)
     datadf['comment_text'] = [str(s)[:512].strip() for s in datadf['comment_text']]
-    datadf = datadf[[len(l)>5 for l in datadf['comment_text']]]
+    datadf = datadf[[len(l)>MIN_ANNOTATION_COUNT for l in datadf['comment_text']]]
 
     if 'comment_label' in datadf:
         datadf['comment_label'] = [1 if int(l)==1 else 0 for l in datadf['comment_label']]

@@ -1,3 +1,6 @@
+import warnings
+warnings.filterwarnings("ignore")
+
 import os
 import argparse
 import numpy as np
@@ -20,13 +23,15 @@ argp.add_argument('--tuned-model-split',type=str,dest='tsplit',default='test')
 args = argp.parse_args()
 
 print('loading data to be labelled.')
-res, datadf = load_huggingface_data(args.rpath,args.tsplit)
+res, rawdf = load_huggingface_data(args.rpath,args.tsplit)
 if not res:
     # datadf = load_finetuning_data(args.rpath)
-    datadf = load_external_data(args.rpath)
+    rawdf = load_external_data(args.rpath)
+rawdf = rawdf[['comment_id','comment_text','comment_label'] if 'comment_label' in rawdf.columns else ['comment_id','comment_label']]
+rawdf['comment_id'] = rawdf['comment_id'].astype(int)
 
 print('preprocessing data.')
-dataset, datadf = preprocess_label_data(datadf,split=False)
+dataset, datadf = preprocess_label_data(rawdf.copy(),split=False)
 
 print('tokenizing data.')
 base_model_path = fetch_base_model(args.bpath)
@@ -52,6 +57,8 @@ pred = np.argmax(_pred.predictions,axis=1)
 if 'labels' in datadf:
     print(classification_report(pred,tokenized_dataset['eval']['labels']))
 datadf['comment_label'] = list(pred)
-datadf[['comment_id','comment_label']].to_csv(args.xpath)
+
+rawdf.join(datadf,on='comment_id')
+rawdf[['comment_id','comment_label']].to_csv(args.xpath)
 
 clear_cache()
