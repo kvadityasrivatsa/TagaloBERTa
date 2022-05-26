@@ -27,8 +27,9 @@ res, rawdf = load_huggingface_data(args.rpath,args.tsplit)
 if not res:
     # datadf = load_finetuning_data(args.rpath)
     rawdf = load_external_data(args.rpath)
-rawdf = rawdf[['comment_id','comment_text','comment_label'] if 'comment_label' in rawdf.columns else ['comment_id','comment_label']]
+rawdf = rawdf[['comment_id','comment_text','comment_label'] if 'comment_label' in rawdf.columns else ['comment_id','comment_text']]
 rawdf['comment_id'] = rawdf['comment_id'].astype(int)
+rawdf = rawdf.set_index('comment_id')
 
 print('preprocessing data.')
 dataset, datadf = preprocess_label_data(rawdf.copy(),split=False)
@@ -58,7 +59,7 @@ if 'labels' in datadf:
     print(classification_report(pred,tokenized_dataset['eval']['labels']))
 datadf['comment_label'] = list(pred)
 
-rawdf.join(datadf,on='comment_id')
-rawdf[['comment_id','comment_label']].to_csv(args.xpath)
+rawdf.join(datadf)
+rawdf[['comment_label']].to_csv(args.xpath)
 
 clear_cache()
