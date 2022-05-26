@@ -27,6 +27,7 @@ res, rawdf = load_huggingface_data(args.rpath,args.tsplit)
 if not res:
     # datadf = load_finetuning_data(args.rpath)
     rawdf = load_external_data(args.rpath)
+rawdf = rawdf.dropna(subset=['comment_id'])
 rawdf = rawdf[['comment_id','comment_text','comment_label'] if 'comment_label' in rawdf.columns else ['comment_id','comment_text']]
 rawdf['comment_id'] = rawdf['comment_id'].astype(int)
 rawdf = rawdf.set_index('comment_id')
