@@ -14,7 +14,7 @@ from preprocessing import preprocess_label_data, clear_cache
 argp = argparse.ArgumentParser()
 argp.add_argument('--raw-data',type=str,dest='rpath',required=True,default=None)
 argp.add_argument('--output-path',type=str,dest='xpath',required=True,default='output.csv')
-argp.add_argument('--tuned-model',type=str,dest='tpath',default='TagaloBERTa_hgfc_plus_Bi10_30M.model')
+argp.add_argument('--tuned-model',type=str,dest='tpath',default='TagaloBERTa_Bi10_30M.model')
 argp.add_argument('--base-model',type=str,dest='bpath',default='TagaloBERTa_30M')
 argp.add_argument('--tuned-model-split',type=str,dest='tsplit',default='test')
 args = argp.parse_args()
