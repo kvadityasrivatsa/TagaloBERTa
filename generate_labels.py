@@ -29,13 +29,20 @@ res, rawdf = load_huggingface_data(args.rpath,args.tsplit)
 if not res:
     # datadf = load_finetuning_data(args.rpath)
     rawdf = load_external_data(args.rpath)
+
+pdb.set_trace(header='post rawdf loading')
+
 rawdf = rawdf.dropna(subset=['comment_id'])
 rawdf = rawdf[['comment_id','comment_text','comment_label'] if 'comment_label' in rawdf.columns else ['comment_id','comment_text']]
 rawdf['comment_id'] = rawdf['comment_id'].astype(int)
 # rawdf = rawdf.set_index('comment_id')
 
+pdb.set_trace(header='post prelim row drop')
+
 print('preprocessing data.')
 dataset, datadf = preprocess_label_data(rawdf.copy(),split=False)
+
+pdb.set_trace(header='port preproc')
 
 print('tokenizing data.')
 base_model_path = fetch_base_model(args.bpath)
@@ -62,15 +69,19 @@ if 'labels' in datadf:
     print(classification_report(pred,tokenized_dataset['eval']['labels']))
 datadf['comment_label'] = list(pred)
 
-pdb.set_trace()
+pdb.set_trace(header='pre join')
 
 # rawdf = rawdf.join(datadf,on='comment_id',lsuffix='',rsuffix='_R')
 # rawdf['comment_label'] = rawdf['comment_label'].fillna(1.0).astype(int)
 rawdf = linear_join(rawdf,datadf)
 
+pdb.set_trace(header='post join')
+
 rawdf[['comment_label']].to_csv(args.xpath)
 zcount = len(rawdf[rawdf['comment_label']==0])
 zprop = zcount / len(rawdf)
 print(f"class distribution: 0:({zprop}|{zcount}) 1:({1-zprop}|{len(rawdf)-zcount})")
+
+pdb.set_trace(header='last trace')
 
 clear_cache()

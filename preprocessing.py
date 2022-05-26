@@ -19,7 +19,7 @@ RE_PATTERNS = {k:re.compile(v) for k,v in RE_PATTERNS.items()}
 MAX_SEQ_LEN = 512
 MIN_ANNOTATION_COUNT = 5
 
-def clean_label_df(df,max_seq_len=512):
+def clean_label_df(df):
 
     texts = df['comment_text']
     texts = [re.sub(r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)",'',s) for s in texts]
@@ -39,7 +39,7 @@ def clean_label_df(df,max_seq_len=512):
 def preprocess_label_data(datadf,split=False,test_size=None):
     datadf = datadf.dropna()
     datadf = clean_label_df(datadf)
-    datadf['comment_text'] = [str(s)[:512].strip() for s in datadf['comment_text']]
+    datadf['comment_text'] = [str(s)[:MAX_SEQ_LEN].strip() for s in datadf['comment_text']]
     datadf = datadf[[len(l)>MIN_ANNOTATION_COUNT for l in datadf['comment_text']]]
 
     if 'comment_label' in datadf:
@@ -56,8 +56,8 @@ def preprocess_label_data(datadf,split=False,test_size=None):
         print(f'after pruning: {len(datadf)}')
 
         traindf, testdf = train_test_split(datadf,test_size=0.25,random_state=0)
-        traindf = traindf.reset_index(drop=True)
-        testdf = testdf.reset_index(drop=True)
+        # traindf = traindf.reset_index(drop=True)
+        # testdf = testdf.reset_index(drop=True)
         traindf.to_csv('./data/train.csv',index=False)
         testdf.to_csv('./data/test.csv',index=False)
         dataset = load_dataset('csv', data_files={'train':'./data/train.csv',
@@ -65,7 +65,7 @@ def preprocess_label_data(datadf,split=False,test_size=None):
                                     cache_dir=CACHE_PATH)
 
     else:
-        datadf = datadf.reset_index(drop=True)
+        # datadf = datadf.reset_index(drop=True)
         datadf.to_csv('./data/data.csv',index=False)
         dataset = load_dataset('csv',data_files={'eval':'./data/data.csv'},
                                 cache_dir=CACHE_PATH)
