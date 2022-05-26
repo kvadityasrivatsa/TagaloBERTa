@@ -59,6 +59,10 @@ if 'labels' in datadf:
     print(classification_report(pred,tokenized_dataset['eval']['labels']))
 datadf['comment_label'] = list(pred)
 
+print(datadf)
+print('\n\n\n\n')
+print(rawdf)
+
 rawdf.join(datadf)
 rawdf[['comment_label']].to_csv(args.xpath)
 
