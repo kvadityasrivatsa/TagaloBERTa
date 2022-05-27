@@ -2,6 +2,7 @@ import os
 import re
 import csv
 import shutil
+import pandas as pd
 from time import time
 from tqdm import tqdm
 from datasets import load_dataset
@@ -19,11 +20,6 @@ RE_PATTERNS = {'urls':r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)
 RE_PATTERNS = {k:re.compile(v) for k,v in RE_PATTERNS.items()}
 MAX_SEQ_LEN = 512
 MIN_SEQ_LEN = 5
-
-# def parse_csv(path):
-#     reader = csv.reader(open(path,'r'))
-#     header = next(reader)
-#     rows = [r[-1] for r in reader]
 
 def clean_label_df(df):
 

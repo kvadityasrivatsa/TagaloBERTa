@@ -1,7 +1,9 @@
 import os
+import csv
 import gdown
 import shutil
 import pandas as pd
+from tqdm import tqdm
 from datasets import load_dataset
 
 DATA_PATH = './data'
@@ -67,11 +69,25 @@ def fetch_finetuned_model(model):
 #         # datadf = datadf.rename(columns={v:k for k,v in col_map.items()}).reset_index(drop=True)
 #     return datadf
 
+def parse_csv(path):
+    print(f'parsing {path}')
+    reader = csv.reader(open(path,'r'))
+    header = next(reader)
+    rows = [r[-1] for r in reader]
+    try:
+        id_col, text_col = header.index('comment_id'), header.index('comment_text')
+    except:
+        raise Exception('mandatory columns not found.')
+    id_list, text_list = zip(*[[rows[i][id_col],rows[i][text_col]] for i in tqdm(range(len(rows))) if len(rows[i])==len(header)])
+    df = pd.DataFrame({'comment_id':id_list,'comment_text':text_list})
+    return df
+
 def load_external_data(path):
     if not os.path.exists(path):
-        raise FileNotFoundException()
+        raise Exception(f'File not found. {path}')
     else:
-        datadf = pd.read_csv(path)
+        # datadf = pd.read_csv(path)
+        datadf = parse_csv(path)
         if all([c in datadf.columns for c in ['comment_id','comment_text']]):
             return datadf
         else:
