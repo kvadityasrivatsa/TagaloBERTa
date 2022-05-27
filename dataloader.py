@@ -19,7 +19,8 @@ base_model_urls = {'TagaloBERTa_1M':'https://drive.google.com/uc?id=199_fviLlads
             }
 
 finetuned_model_urls = {'TagaloBERTa_RoBERTa_Bi10_30M.model':'https://drive.google.com/uc?id=1SiOXy7ma1nQckQKJ249pNnSzFh8FmhCE',
-                        'TagaloBERTa_Bi10_30M.model':'https://drive.google.com/uc?id=1zzuYLV634OdWdHEfse1SY4PvhP5zMSbU',
+                        'TagaloBERTa_hgfc_30M.model':'https://drive.google.com/uc?id=1zzuYLV634OdWdHEfse1SY4PvhP5zMSbU',
+                        'TagaloBERTa_Bi10_30M.model':'https://drive.google.com/uc?id=1zP5ghhJV15j_opHX9-uOcC_XaQV2M5s7',
                         'TagaloBERTa_Bi20_30M.model':'https://drive.google.com/uc?id=1K1e9H8MV0uTGbVal4cZ3OUbwGXtdHxuH',
                         'TagaloBERTa_RoBERTa_hsf_30M.model':'https://drive.google.com/uc?id=1JozmqAIFE8pr5UeL6IYc4BNhpj-ep8NL',
                         'TagaloBERTa_hgfc_plus_Bi10_30M.model':'https://drive.google.com/uc?id=1GBI1GkSQvz5Hk8EOR7GFI2NGxY3rxETS',

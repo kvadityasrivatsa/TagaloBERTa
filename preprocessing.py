@@ -1,5 +1,6 @@
 import os
 import re
+import csv
 import shutil
 from time import time
 from tqdm import tqdm
@@ -17,7 +18,12 @@ RE_PATTERNS = {'urls':r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)
                }
 RE_PATTERNS = {k:re.compile(v) for k,v in RE_PATTERNS.items()}
 MAX_SEQ_LEN = 512
-MIN_ANNOTATION_COUNT = 5
+MIN_SEQ_LEN = 5
+
+# def parse_csv(path):
+#     reader = csv.reader(open(path,'r'))
+#     header = next(reader)
+#     rows = [r[-1] for r in reader]
 
 def clean_label_df(df):
 
@@ -40,7 +46,7 @@ def preprocess_label_data(datadf,split=False,test_size=None):
     datadf = datadf.dropna()
     datadf = clean_label_df(datadf)
     datadf['comment_text'] = [str(s)[:MAX_SEQ_LEN].strip() for s in datadf['comment_text']]
-    datadf = datadf[[len(l)>MIN_ANNOTATION_COUNT for l in datadf['comment_text']]]
+    datadf = datadf[[len(l)>MIN_SEQ_LEN for l in datadf['comment_text']]]
 
     if 'comment_label' in datadf:
         datadf['comment_label'] = [1 if int(l)==1 else 0 for l in datadf['comment_label']]
