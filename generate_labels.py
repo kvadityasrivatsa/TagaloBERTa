@@ -12,7 +12,7 @@ from sklearn.metrics import classification_report
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import TrainingArguments, Trainer
 
-from dataloader import fetch_base_model, fetch_finetuned_model
+from dataloader import fetch_base_model, fetch_finetuned_model, load_rf_model
 from dataloader import load_huggingface_data, load_external_data
 from preprocessing import preprocess_label_data, linear_join, clear_cache
 
@@ -22,6 +22,7 @@ argp.add_argument('--output-path',type=str,dest='xpath',required=True,default='o
 argp.add_argument('--tuned-model',type=str,dest='tpath',default='TagaloBERTa_intersection_30M.model')
 argp.add_argument('--base-model',type=str,dest='bpath',default='TagaloBERTa_30M')
 argp.add_argument('--tuned-model-split',type=str,dest='tsplit',default='test')
+argp.add_argument('--ensemble-with-random-forest',type=bool,dest='rf_ensemble',default=False)
 args = argp.parse_args()
 
 print('loading data to be labelled.')
@@ -77,11 +78,23 @@ rawdf = linear_join(rawdf,datadf)
 
 # pdb.set_trace(header='post join')
 
-rawdf[['comment_id','comment_text','comment_label']].to_csv(args.xpath)
 zcount = len(rawdf[rawdf['comment_label']==0])
 zprop = zcount / len(rawdf)
-print(f"class distribution: 0:({zprop}|{zcount}) 1:({1-zprop}|{len(rawdf)-zcount})")
+print(f"class distribution: 0:({zprop}|{zcount}) 1:({1-zprop}|{len(rawdf)-zcount})\n")
 
+if args.rf_ensemble:
+    print('Random Forest Ensemble')
+    rf_model, rf_vectorizer = load_rf_model() 
+    print('running vectorizer')
+    comment_text_vectorized = rf_vectorizer(datadf['comment_text'])
+    print('predicting labels')
+    rawdf['rf_label'] = rf_model.predict(comment_text_vectorized)
+    rawdf['comment_label'] = np.logical_and(rawdf['comment_label'],rawdf['rf_label'])
+    zcount = len(rawdf[rawdf['comment_label']==0])
+    zprop = zcount / len(rawdf)
+    print(f"ensemble class distribution: 0:({zprop}|{zcount}) 1:({1-zprop}|{len(rawdf)-zcount})\n")
+
+rawdf[['comment_id','comment_text','comment_label']].to_csv(args.xpath)
 # pdb.set_trace(header='last trace')
 
 clear_cache()

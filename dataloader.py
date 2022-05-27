@@ -3,6 +3,7 @@ import csv
 import gdown
 import shutil
 import pandas as pd
+import pickle
 from tqdm import tqdm
 from datasets import load_dataset
 
@@ -27,6 +28,7 @@ finetuned_model_urls = {'TagaloBERTa_RoBERTa_Bi10_30M.model':'https://drive.goog
                         'TagaloBERTa_Bi20_30M.model':'https://drive.google.com/uc?id=1K1e9H8MV0uTGbVal4cZ3OUbwGXtdHxuH',
                         'TagaloBERTa_RoBERTa_hsf_30M.model':'https://drive.google.com/uc?id=1JozmqAIFE8pr5UeL6IYc4BNhpj-ep8NL',
                         'TagaloBERTa_hgfc_plus_Bi10_30M.model':'https://drive.google.com/uc?id=1GBI1GkSQvz5Hk8EOR7GFI2NGxY3rxETS',
+                        'rf_model':'https://drive.google.com/uc?id=1rlC4QWwDEnEYUkuEnTmfYAFhRE84YzDu',
                     }
 
 custom_data_urls = {'balanced.csv':None,
@@ -80,6 +82,7 @@ def parse_csv(path):
         raise Exception('mandatory columns not found.')
     id_list, text_list = zip(*[[rows[i][id_col],rows[i][text_col]] for i in tqdm(range(len(rows))) if len(rows[i])==len(header)])
     df = pd.DataFrame({'comment_id':id_list,'comment_text':text_list})
+    print(f'parser: {len(df)} raw examples.')
     return df
 
 def load_external_data(path):
@@ -100,3 +103,11 @@ def load_huggingface_data(path,split='test',col_map={'text':'comment_text','labe
         return False, None
     datadf = pd.DataFrame({'comment_text':data[split][col_map['text']],'label':data[split][col_map['labels']]})
     return True, datadf
+
+def load_rf_model():
+    os.makedirs(FINETUNED_MODEL_PATH,exist_ok=True)
+    rf_model_path = os.path.join(FINETUNED_MODEL_PATH,'rf_model.zip')
+    gdown.cached_download(finetuned_model_urls['rf_model'],rf_model_path)
+    with open(rf_model_path,'rb') as f:
+        model = pickle.load(f)
+        return model['rf_model'], model['rf_vectorizer']
