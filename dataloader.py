@@ -73,7 +73,7 @@ def parse_csv(path):
     print(f'parsing {path}')
     reader = csv.reader(open(path,'r'))
     header = next(reader)
-    rows = [r[-1] for r in reader]
+    rows = [r for r in reader]
     try:
         id_col, text_col = header.index('comment_id'), header.index('comment_text')
     except:
