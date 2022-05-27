@@ -19,6 +19,7 @@ base_model_urls = {'TagaloBERTa_1M':'https://drive.google.com/uc?id=199_fviLlads
             }
 
 finetuned_model_urls = {'TagaloBERTa_RoBERTa_Bi10_30M.model':'https://drive.google.com/uc?id=1SiOXy7ma1nQckQKJ249pNnSzFh8FmhCE',
+                        'TagaloBERTa_intersection_30M.model':'https://drive.google.com/uc?id=12iFanE1a9l6fU9YhHsuVxUqJKJTY9879',
                         'TagaloBERTa_hgfc_30M.model':'https://drive.google.com/uc?id=1QjZVSKG5H03jLppZEVH9V6h0EuI5pb24',
                         'TagaloBERTa_Bi10_30M.model':'https://drive.google.com/uc?id=13KizqMchhlALLAWOm2t9igmCbEbka2ga',
                         'TagaloBERTa_Bi20_30M.model':'https://drive.google.com/uc?id=1K1e9H8MV0uTGbVal4cZ3OUbwGXtdHxuH',
@@ -33,6 +34,7 @@ custom_data_urls = {'balanced.csv':None,
                     'balanced_iterative_30.csv':'https://drive.google.com/uc?id=1VONn7GToySkbdiwy8HgG3djUdufqdmjQ',
                     'hgfc_plus_Bi10.csv':'https://drive.google.com/uc?id=1kjozHPdEnaw_4wbTMJdLsFoAUFcCe5LN',
                     'intersection_data.csv':'https://drive.google.com/uc?id=1kylIL2IE-d29nmy2iSqLeoi-0qxyzdAx',
+                    'intersection_labelled.csv':'https://drive.google.com/uc?id=1rQDc21kzQexf-b176HwTawUC0SHU2wRM',
                     }
 
 def fetch_base_model(model):
