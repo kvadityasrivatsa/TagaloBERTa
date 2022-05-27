@@ -32,7 +32,7 @@ custom_data_urls = {'balanced.csv':None,
                     'balanced_iterative_20.csv':'https://drive.google.com/uc?id=1ZcwvV0CHjRg1kv8ogXfkVGf4vIKHuW85',
                     'balanced_iterative_30.csv':'https://drive.google.com/uc?id=1VONn7GToySkbdiwy8HgG3djUdufqdmjQ',
                     'hgfc_plus_Bi10.csv':'https://drive.google.com/uc?id=1kjozHPdEnaw_4wbTMJdLsFoAUFcCe5LN',
-                    'intersection_data.csv':'https://drive.google.com/uc?id=1xHJEjYy21vdf9vr8LIPh2BMEQbXpsdIY',
+                    'intersection_data.csv':'https://drive.google.com/uc?id=1kylIL2IE-d29nmy2iSqLeoi-0qxyzdAx',
                     }
 
 def fetch_base_model(model):
