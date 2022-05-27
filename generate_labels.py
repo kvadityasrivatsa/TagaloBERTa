@@ -22,7 +22,7 @@ argp.add_argument('--output-path',type=str,dest='xpath',required=True,default='o
 argp.add_argument('--tuned-model',type=str,dest='tpath',default='TagaloBERTa_intersection_30M.model')
 argp.add_argument('--base-model',type=str,dest='bpath',default='TagaloBERTa_30M')
 argp.add_argument('--tuned-model-split',type=str,dest='tsplit',default='test')
-argp.add_argument('--ensemble-with-random-forest',type=bool,dest='rf_ensemble',default=False)
+argp.add_argument('--ensemble-with-random-forest',type=bool,dest='rf_ensemble',default=True)
 args = argp.parse_args()
 
 print('loading data to be labelled.')
