@@ -19,7 +19,7 @@ from preprocessing import preprocess_label_data, linear_join, clear_cache
 argp = argparse.ArgumentParser()
 argp.add_argument('--raw-data',type=str,dest='rpath',required=True,default=None)
 argp.add_argument('--output-path',type=str,dest='xpath',required=True,default='output.csv')
-argp.add_argument('--tuned-model',type=str,dest='tpath',default='TagaloBERTa_Bi10_30M.model')
+argp.add_argument('--tuned-model',type=str,dest='tpath',default='TagaloBERTa_intersection_30M.model')
 argp.add_argument('--base-model',type=str,dest='bpath',default='TagaloBERTa_30M')
 argp.add_argument('--tuned-model-split',type=str,dest='tsplit',default='test')
 args = argp.parse_args()
@@ -77,7 +77,7 @@ rawdf = linear_join(rawdf,datadf)
 
 # pdb.set_trace(header='post join')
 
-rawdf[['comment_text','comment_label']].to_csv(args.xpath)
+rawdf[['comment_id','comment_text','comment_label']].to_csv(args.xpath)
 zcount = len(rawdf[rawdf['comment_label']==0])
 zprop = zcount / len(rawdf)
 print(f"class distribution: 0:({zprop}|{zcount}) 1:({1-zprop}|{len(rawdf)-zcount})")
