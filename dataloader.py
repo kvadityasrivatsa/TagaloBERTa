@@ -20,7 +20,7 @@ base_model_urls = {'TagaloBERTa_1M':'https://drive.google.com/uc?id=199_fviLlads
 
 finetuned_model_urls = {'TagaloBERTa_RoBERTa_Bi10_30M.model':'https://drive.google.com/uc?id=1SiOXy7ma1nQckQKJ249pNnSzFh8FmhCE',
                         'TagaloBERTa_hgfc_30M.model':'https://drive.google.com/uc?id=1zzuYLV634OdWdHEfse1SY4PvhP5zMSbU',
-                        'TagaloBERTa_Bi10_30M.model':'https://drive.google.com/uc?id=1zP5ghhJV15j_opHX9-uOcC_XaQV2M5s7',
+                        'TagaloBERTa_Bi10_30M.model':'https://drive.google.com/uc?id=1Jv8w0F7LEgKImRyC5oKcDFpClRKdt49L',
                         'TagaloBERTa_Bi20_30M.model':'https://drive.google.com/uc?id=1K1e9H8MV0uTGbVal4cZ3OUbwGXtdHxuH',
                         'TagaloBERTa_RoBERTa_hsf_30M.model':'https://drive.google.com/uc?id=1JozmqAIFE8pr5UeL6IYc4BNhpj-ep8NL',
                         'TagaloBERTa_hgfc_plus_Bi10_30M.model':'https://drive.google.com/uc?id=1GBI1GkSQvz5Hk8EOR7GFI2NGxY3rxETS',
@@ -28,10 +28,11 @@ finetuned_model_urls = {'TagaloBERTa_RoBERTa_Bi10_30M.model':'https://drive.goog
 
 custom_data_urls = {'balanced.csv':None,
                     'balanced_iterative_5.csv':'https://drive.google.com/uc?id=1OF99m9Q8BsolWctCbRRNCYMVksVFFnvw',
-                    'balanced_iterative_10.csv':'https://drive.google.com/uc?id=1gpBm5bvvIJKD_cUdp7e0hVNMjaoi4dHT',
+                    'balanced_iterative_10.csv':'https://drive.google.com/uc?id=1zP5ghhJV15j_opHX9-uOcC_XaQV2M5s7',
                     'balanced_iterative_20.csv':'https://drive.google.com/uc?id=1ZcwvV0CHjRg1kv8ogXfkVGf4vIKHuW85',
                     'balanced_iterative_30.csv':'https://drive.google.com/uc?id=1VONn7GToySkbdiwy8HgG3djUdufqdmjQ',
                     'hgfc_plus_Bi10.csv':'https://drive.google.com/uc?id=1kjozHPdEnaw_4wbTMJdLsFoAUFcCe5LN',
+                    'intersection_data.csv':'https://drive.google.com/uc?id=1xHJEjYy21vdf9vr8LIPh2BMEQbXpsdIY',
                     }
 
 def fetch_base_model(model):
