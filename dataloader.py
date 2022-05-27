@@ -28,7 +28,7 @@ finetuned_model_urls = {'TagaloBERTa_RoBERTa_Bi10_30M.model':'https://drive.goog
                         'TagaloBERTa_Bi20_30M.model':'https://drive.google.com/uc?id=1K1e9H8MV0uTGbVal4cZ3OUbwGXtdHxuH',
                         'TagaloBERTa_RoBERTa_hsf_30M.model':'https://drive.google.com/uc?id=1JozmqAIFE8pr5UeL6IYc4BNhpj-ep8NL',
                         'TagaloBERTa_hgfc_plus_Bi10_30M.model':'https://drive.google.com/uc?id=1GBI1GkSQvz5Hk8EOR7GFI2NGxY3rxETS',
-                        'rf_model':'https://drive.google.com/uc?id=1rlC4QWwDEnEYUkuEnTmfYAFhRE84YzDu',
+                        'rf_model':'https://drive.google.com/uc?id=1-1bo-EcCLnmvbtUc8GU1pkyQ-aTreEiq',
                     }
 
 custom_data_urls = {'balanced.csv':None,
@@ -110,4 +110,4 @@ def load_rf_model():
     gdown.cached_download(finetuned_model_urls['rf_model'],rf_model_path)
     with open(rf_model_path,'rb') as f:
         model = pickle.load(f)
-        return model['rf_model'], model['rf_vectorizer']
+        return model['rf_model'], model['rf_vectorizer'], model['rf_cleaner']

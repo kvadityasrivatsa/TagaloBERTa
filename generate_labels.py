@@ -84,9 +84,11 @@ print(f"class distribution: 0:({zprop}|{zcount}) 1:({1-zprop}|{len(rawdf)-zcount
 
 if args.rf_ensemble:
     print('Random Forest Ensemble')
-    rf_model, rf_vectorizer = load_rf_model() 
+    rf_model, rf_vectorizer, rf_cleaner = load_rf_model() 
+    print('cleaning data')
+    comment_text = rf_cleaner(rawdf['comment_text'].copy())
     print('running vectorizer')
-    comment_text_vectorized = rf_vectorizer.transform(datadf['comment_text'])
+    comment_text_vectorized = rf_vectorizer.transform(comment_text)
     print('predicting labels')
     rawdf['rf_label'] = rf_model.predict(comment_text_vectorized)
     rawdf['comment_label'] = np.logical_and(rawdf['comment_label'],rawdf['rf_label'])
