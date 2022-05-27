@@ -1,4 +1,5 @@
 import os
+import re
 import csv
 import gdown
 import shutil
@@ -110,4 +111,9 @@ def load_rf_model():
     gdown.cached_download(finetuned_model_urls['rf_model'],rf_model_path)
     with open(rf_model_path,'rb') as f:
         model = pickle.load(f)
-        return model['rf_model'], model['rf_vectorizer'], model['rf_cleaner']
+    def rf_cleaner(l):
+        l = [re.sub(r"(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)",'',s if isinstance(s,str) else '') for s in l]
+        l = [re.sub(r"[^a-z0-9']",' ',s.lower()) for s in l]
+        l = [re.sub(r"[ ]+",' ',s.lower()) for s in l]
+        return l
+    return model['rf_model'], model['rf_vectorizer'], rf_cleaner
