@@ -86,7 +86,7 @@ if args.rf_ensemble:
     print('Random Forest Ensemble')
     rf_model, rf_vectorizer = load_rf_model() 
     print('running vectorizer')
-    comment_text_vectorized = rf_vectorizer(datadf['comment_text'])
+    comment_text_vectorized = rf_vectorizer.transform(datadf['comment_text'])
     print('predicting labels')
     rawdf['rf_label'] = rf_model.predict(comment_text_vectorized)
     rawdf['comment_label'] = np.logical_and(rawdf['comment_label'],rawdf['rf_label'])
