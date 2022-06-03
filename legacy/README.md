@@ -17,7 +17,8 @@ This README documents the different methods for labelled-data-augmentation and h
       2. [Re-Training Transformer models](#Re-Training-Transformer-models)
       3. [Training Static-Embeddings (GloVe) from scratch](#Training-Static-Embeddings-(GloVe)-from-scratch)
       4. [TagaloBERTa: Training RoBERTa from scratch](#TagaloBERTa:-Training-RoBERTa-from-scratch)
-3. Conclusion
+   3. [Prediction Ratio Amendments](#Prediction-Ratio-Amendments)
+3. [Conclusion](#Conclusion)
 
 
 
@@ -185,13 +186,13 @@ This is normally the go-to method (and approached second after traditional metho
 
 #### Re-Training Transformer models
 
-Considering the poor performance on purely finetuned models, the next step was to further train (or re-train) an existing encoder on the raw text from the tagged as well as untagged Tagalog-English comments corpus. RoBERTa ([jcblaise/roberta-tagalog-base](https://huggingface.co/jcblaise/roberta-tagalog-base)) was re-trained on <>.
+Considering the poor performance on purely finetuned models, the next step was to further train (or re-train) on raw text resembling the distribution of the annotated data. RoBERTa ([jcblaise/roberta-tagalog-base](https://huggingface.co/jcblaise/roberta-tagalog-base)) was re-trained on a 1M sample set from the raw corpus as well as the coment text column from the annotated data (NOTE: This does not lead to invalid testing later, text samples used from the annotated data are trained on the MLM task, and are not accompanied by the respective sample labels during this re-training).
+
+One of the issues identified with the data was the difference in the subword token distribution between a largely Filipino corpus (TLUnified) and a code-mixed Filipino-English corpus. Thus, simply re-training would not affect the pre-trained tokenizer (i.e. subword token distribution) used to segment raw text for re-training. This suggested the need for <u>training an encoder from scratch</u>. 
 
 [Return to top](#Contents)
 
 #### Training Static-Embeddings (GloVe) from scratch
-
-One of the issues identified with the data was the difference in the subword token distribution between a largely Filipino corpus (TLUnified) and a code-mixed Filipino-English corpus. Thus, simply re-training would not affect the pre-trained tokenizer (i.e. subword token distribution) used to segment raw text for re-training. This suggested the need for training an encoder from sratch. 
 
 As training a Transformer based model from scratch is data intensive, an intermediate apporach was taken up to train a static-embeddings language model. GloVe embeddings were used for this. 
 
@@ -213,6 +214,33 @@ The training config used was the following:
 
 [Return to top](#Contents)
 
+### Prediction Ratio Amendments
+
+The initial release of the pipeline consisted of a RoBERTa model with a linear tuning head, pre-trained on the 30M set, and finetuned on the combined set of `balanced_10.tsv` and the standalone [huggingface dataset](https://huggingface.co/datasets/hate_speech_filipino). The model returned the following scores on the holdout test set:
+
+```
+              precision    recall  f1-score   support
+
+           0       0.92      0.93      0.93      1267
+           1       0.93      0.92      0.92      1133
+
+    accuracy                           0.93      2400
+   macro avg       0.93      0.92      0.92      2400
+weighted avg       0.93      0.93      0.92      2400
+```
+
+However, upon running inference on the 400M raw samples, it was found that approx. 56% of the samples were flagged as hateful (tag-1). This suggests too loose a bound on the class. Further analysis showed that on a random 1M sample set:
+
+- Finetuning on `balanced_10.tsv`  resulted in ~27% samples being assigned class-1.
+- On the standalone huggingface dataset: ~25%.
+- The annotation-intersection of the above two datasets (`label = AND(balaced.label,hgfc.label)`): ~24%.
+
+The above combinations still maintained a low pass for the positive class. To make the class boundary further stringent, the originally used TF-IDF driven Random Forest model ([code section](https://github.com/kvadityasrivatsa/TagaloBERTa/blob/29d88d2ea9c304d617509445309d741dc376d8b0/generate_labels.py#L85)) was also applied in intersection. As the model is purely lexical, despite an overall poorer performance, the statistical model is capable of identifying key hateful tokens. The tags from this model and that from the TagaloBERTa model were combined using a logical-AND. This retrains most of the hateful comments while discarding most false positives. 
+
+The final positve class proportion amounted to roughly **12%**.
+
+[Return to top](#Contents)
+
 ### Conclusion
 
 The issues faced in this project can be linked to two major root causes:
@@ -225,17 +253,23 @@ The issues faced in this project can be linked to two major root causes:
 
    Following an incremental process, from finetuning and re-training, to pre-training a RoBERTa model from scratch, TagaloBERTa was trained on the comment texts from the labelled as well as the raw (~30M) samples mathcing the distribution of content as well as extent of code-mixing as in the original training data.
 
-The final pipelines utilizes the augmented labelled data to fine-tune a (linear) classification head on a pre-trained RoBERTa model for detecting hate speech. The scores obtained on a held-out test set for the latest version of the pipeline are given below:
+Other causes:
+
+- Loose class bound:
+
+  Individual models trained/finetuned on the annotated data ended up calssifying substantially more comments than necessary when applied to previously unseen data. This was curbed by making the class bound more stringent, by passing the label predictions of the individual models through a logical-AND pass.
+
+The final pipelines utilizes the augmented labelled data to fine-tune a (linear) classification head on a pre-trained RoBERTa model as well as a Random Forest Classifier trained on TF-IDF features from the same data as used for the aforementioned funtuning. The scores obtained on a held-out test set for the latest version of the pipeline are given below:
 
 ```
               precision    recall  f1-score   support
 
-           0       0.79      0.85      0.81      2428
-           1       0.86      0.80      0.83      2860
+           0       0.92      0.93      0.93      1267
+           1       0.93      0.92      0.92      1133
 
-    accuracy                           0.82      5288
-   macro avg       0.82      0.82      0.82      5288
-weighted avg       0.83      0.82      0.82      5288
+    accuracy                           0.93      2400
+   macro avg       0.93      0.92      0.92      2400
+weighted avg       0.93      0.93      0.92      2400
 ```
 
 The code and instructions for generating prediction labels on comment text can be found [here](https://github.com/kvadityasrivatsa/TagaloBERTa/blob/main/generate_labels.py).
