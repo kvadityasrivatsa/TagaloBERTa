@@ -178,9 +178,11 @@ This is normally the go-to method (and approached second after traditional metho
 2. **RoBERTa** ([jcblaise/roberta-tagalog-base](https://huggingface.co/jcblaise/roberta-tagalog-base))
    - The model is pre-trained on TLUnified (large Filipino corpus) and released on HuggingFace.
 
-**Finetuning Notebook:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1JEdzwgFiw9Vhr9-izSHGrh7eVoB4X3qv?usp=sharing) 
+**Finetuning Notebook (Original codebase):** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1JEdzwgFiw9Vhr9-izSHGrh7eVoB4X3qv?usp=sharing) 
 
-**NOTE:** The above script is an older version used primarily for fine-tuning the jcblaise RoBERTa. The finetuning script used in the latest version of the project is located [here](), in the main repository.
+**NOTE:** The above script is an older version used primarily for fine-tuning the jcblaise RoBERTa. The finetuning script used in the latest version of the project is given below.
+
+**Finetuning Notebook (Revised codebase, used alongside updated dataset):** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1ufIDIYU4LDYytbwF2S2D05NXTe221W_Y?usp=sharing) 
 
 [Return to top](#Contents)
 
@@ -190,6 +192,8 @@ Considering the poor performance on purely finetuned models, the next step was t
 
 One of the issues identified with the data was the difference in the subword token distribution between a largely Filipino corpus (TLUnified) and a code-mixed Filipino-English corpus. Thus, simply re-training would not affect the pre-trained tokenizer (i.e. subword token distribution) used to segment raw text for re-training. This suggested the need for <u>training an encoder from scratch</u>. 
 
+**Re-Training RoBERTa Notebook:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1b7T580HZhAg50hvl0A2Sq7ATu50gCNeR?usp=sharing)
+
 [Return to top](#Contents)
 
 #### Training Static-Embeddings (GloVe) from scratch
@@ -198,17 +202,15 @@ As training a Transformer based model from scratch is data intensive, an interme
 
 **Results:** The embeddings from the GloVe model coupled with the linear layer finetuning as well as sparse-forest classification gave similar scores as the traditional approaches step. The poor performance can largely be attributed to the data being used at the time (same as traditional methods: highly unbalanced samples or too few balanced examples (~2k)).
 
+**GloVe Training Notebook:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17gkNtYevalFuyvJL5zNKSvKUQFSqnEGv?usp=sharing)
+
 [Return to top](#Contents)
 
 #### Training RoBERTa from scratch (TagaloBERTa)
 
 In the project timeline, parallel to the iterative label extrapolation, RoBERTa models were trained from scratch on a large raw code-mixed corpora. Three models were trained with the training corpus sizes: 1M, 10M, and 30M. These can be located at [TagaloBERTa/base_models](https://drive.google.com/drive/folders/1YHdJiwcWaKXFbPx3O7EG89CSfjBhRPeI?usp=sharing).
 
-The training config used was the following:
-
-```
-
-```
+The final pipeline utilizes the RoBERTa model pre-trained on the 30M set for further finetuning for the classification task.
 
 **Training LM code:** [TagaloBERTa/train_lm.py](https://github.com/kvadityasrivatsa/TagaloBERTa/blob/main/train_lm.py)
 
@@ -216,7 +218,7 @@ The training config used was the following:
 
 ### Prediction Ratio Amendments
 
-The initial release of the pipeline consisted of a RoBERTa model with a linear tuning head, pre-trained on the 30M set, and finetuned on the combined set of `balanced_10.tsv` and the standalone [huggingface dataset](https://huggingface.co/datasets/hate_speech_filipino). The model returned the following scores on the holdout test set:
+The initial release of the pipeline consisted of a RoBERTa model with a linear tuning head, pre-trained on the 30M set, and finetuned on the combined set of `balanced_10.tsv` and the standalone [huggingface dataset](https://huggingface.co/datasets/hate_speech_filipino). The model returned the following scores on the heldout test set:
 
 ```
               precision    recall  f1-score   support
@@ -235,9 +237,26 @@ However, upon running inference on the 400M raw samples, it was found that appro
 - On the standalone huggingface dataset: ~25%.
 - The annotation-intersection of the above two datasets (`label = AND(balaced.label,hgfc.label)`): ~24%.
 
-The above combinations still maintained a low pass for the positive class. To make the class boundary further stringent, the originally used TF-IDF driven Random Forest model ([code section](https://github.com/kvadityasrivatsa/TagaloBERTa/blob/29d88d2ea9c304d617509445309d741dc376d8b0/generate_labels.py#L85)) was also applied in intersection. As the model is purely lexical, despite an overall poorer performance, the statistical model is capable of identifying key hateful tokens. The tags from this model and that from the TagaloBERTa model were combined using a logical-AND. This retrains most of the hateful comments while discarding most false positives. 
+The above combinations still maintained a low pass for the positive class. To make the class boundary further stringent, the originally used TF-IDF driven Random Forest model ([code section](https://github.com/kvadityasrivatsa/TagaloBERTa/blob/29d88d2ea9c304d617509445309d741dc376d8b0/generate_labels.py#L85)) was also applied in intersection. As the model is purely lexical, despite a slightly poorer classification performance, the statistical model is capable of identifying key hateful tokens. 
+
+<u>NOTE:</u> The Random Forest model mentioned here is trained on the revised data, unlike the [original RF model](#Ensemble-Tree-Classifiers). Thus the revised scores on a heldout test set (for the RF model only) are given below:
+
+```
+              precision    recall  f1-score   support
+
+           0       0.89      0.94      0.92      6729
+           1       0.82      0.70      0.76      2492
+
+    accuracy                           0.88      9221
+   macro avg       0.86      0.82      0.84      9221
+weighted avg       0.87      0.88      0.87      9221
+```
+
+The tags from this model and that from the TagaloBERTa model were combined using a logical-AND. This retrains most of the hateful comments while discarding most false positives. 
 
 The final positve class proportion amounted to roughly **12%**.
+
+**Intersection Random Forest Notebook:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](**GloVe Training Notebook:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17gkNtYevalFuyvJL5zNKSvKUQFSqnEGv?usp=sharing))
 
 [Return to top](#Contents)
 
@@ -257,20 +276,9 @@ Other causes:
 
 - Loose class bound:
 
-  Individual models trained/finetuned on the annotated data ended up calssifying substantially more comments than necessary when applied to previously unseen data. This was curbed by making the class bound more stringent, by passing the label predictions of the individual models through a logical-AND pass.
+  Individual models trained/finetuned on the annotated data ended up calssifying substantially more comments as positive (hateful) than necessary when applied to previously unseen data. This was curbed by making the class bound more stringent, by passing the label predictions of the individual models through a logical-AND pass.
 
-The final pipelines utilizes the augmented labelled data to fine-tune a (linear) classification head on a pre-trained RoBERTa model as well as a Random Forest Classifier trained on TF-IDF features from the same data as used for the aforementioned funtuning. The scores obtained on a held-out test set for the latest version of the pipeline are given below:
-
-```
-              precision    recall  f1-score   support
-
-           0       0.92      0.93      0.93      1267
-           1       0.93      0.92      0.92      1133
-
-    accuracy                           0.93      2400
-   macro avg       0.93      0.92      0.92      2400
-weighted avg       0.93      0.93      0.92      2400
-```
+The final pipeline utilizes the augmented labelled data to fine-tune a (linear) classification head on a pre-trained RoBERTa model as well as a Random Forest Classifier trained on TF-IDF features from the same data as used for the aforementioned funtuning.
 
 The code and instructions for generating prediction labels on comment text can be found [here](https://github.com/kvadityasrivatsa/TagaloBERTa/blob/main/generate_labels.py).
 
