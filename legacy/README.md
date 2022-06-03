@@ -16,7 +16,7 @@ This README documents the different methods for labelled-data-augmentation and h
       1. [Finetuning Transformer models](#Finetuning-Transformer-models)
       2. [Re-Training Transformer models](#Re-Training-Transformer-models)
       3. [Training Static-Embeddings (GloVe) from scratch](#Training-Static-Embeddings-(GloVe)-from-scratch)
-      4. [TagaloBERTa: Training RoBERTa from scratch](#TagaloBERTa:-Training-RoBERTa-from-scratch)
+      4. [Training RoBERTa from scratch (TagaloBERTa)](#Training-RoBERTa-from-scratch-(TagaloBERTa))
    3. [Prediction Ratio Amendments](#Prediction-Ratio-Amendments)
 3. [Conclusion](#Conclusion)
 
@@ -200,7 +200,7 @@ As training a Transformer based model from scratch is data intensive, an interme
 
 [Return to top](#Contents)
 
-#### TagaloBERTa: Training RoBERTa from scratch
+#### Training RoBERTa from scratch (TagaloBERTa)
 
 In the project timeline, parallel to the iterative label extrapolation, RoBERTa models were trained from scratch on a large raw code-mixed corpora. Three models were trained with the training corpus sizes: 1M, 10M, and 30M. These can be located at [TagaloBERTa/base_models](https://drive.google.com/drive/folders/1YHdJiwcWaKXFbPx3O7EG89CSfjBhRPeI?usp=sharing).
 
