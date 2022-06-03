@@ -256,7 +256,7 @@ The tags from this model and that from the TagaloBERTa model were combined using
 
 The final positve class proportion amounted to roughly **12%**.
 
-**Intersection Random Forest Notebook:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](**GloVe Training Notebook:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17gkNtYevalFuyvJL5zNKSvKUQFSqnEGv?usp=sharing))
+**GloVe Training Notebook:** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1WwSih_ffukcGyF_k8kNbyDh_s9ehzeBi?usp=sharing)
 
 [Return to top](#Contents)
 
