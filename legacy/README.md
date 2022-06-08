@@ -83,11 +83,48 @@ The aim was to identify those samples which qualify as positive(0) or negative(1
 # Iterative Label Extrapolation
 Iteration:
 {
+  # 0. Sample k random comments from the untagged dataset (without replacement)
+  untagged_comments = sample(raw_comments,k)
+  
 	# 1. generate class-sensitive vocabularies
-	pos_voc = {'w': no. of times 'w' occurs in positively labeled samples / length of pos_voc}
-	neg_voc = {'w': no. of times 'w' occurs in negatively labeled samples / length of neg_voc}
+	pos_voc = {'w': no. of times 'w' occurs in tagged_comments.positive_samples / length of pos_voc}
+	neg_voc = {'w': no. of times 'w' occurs in tagged_comments.negative_samples / length of neg_voc}
 	
-	# 2. 
+	# 2. calculate mean ratings for tagged comments
+  for sentence in tagged_comments:
+  	sentence.rating = mean([ (pos_voc[w]-neg_voc[w]) for w in sentence.tokens])
+  
+  # 3. Find optimal classification threshold
+  for thresh in linear_space(-1,+1,steps=1000):
+  	# determine based on performance on tagged samples
+  	predicted_tags = [1 if rating > thresh else 0 for r in tagged_comments.sentences.ratings]
+  	if f1_score(tagged_comments.annotations,predicted_tags) > best_f1_score:
+  		best_thresh = thresh
+  
+  # 4. Determine class divide
+  pos_avg = mean(tagged_comments.positive_samples)
+  neg_avg = mean(tagged_comments.negative_samples)
+  class_divide = pos_avg - neg_avg
+  
+  # 5. Set class-wise thresholds
+  	extr_thresh = 0.5
+    pos_lim = (extr_thresh)*pos_avg + (1-extr_thresh)*best_thresh
+    neg_lim = (extr_thresh)*neg_avg + (1-extr_thresh)*best_thresh
+  
+  # 6. Set pseudo=tags for untagged samples based on ratings, class divide, and extrapolation threshold
+		# untagged comments from the samples set with rating > pos_lim get classified as positive.
+  	# untagged comments from the samples set with rating < neg_lim get classified as negative.
+  	pseudo_tagged_comments = []
+  	for sentence in untagged_comments:
+  		if sentence.rating > pos_lim:
+  			pseudo_tagged_comments.append(sentence,tag=1)
+  		if sentence.rating < neg_lim:
+  			pseudo_tagged_comments.append(sentence,tag=0)
+  		else:
+  			continue
+  
+  # 7. Remove the newly tagged samples from the untagged raw pool to avoid re-sampling.
+  	raw_comments.remove(pseudo_tagged_comments.sentences)
 }
 ```
 
